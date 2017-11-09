@@ -48,7 +48,10 @@ class TestGoogle < ::Minitest::Test
 
   def test_url_non_enterprise
     Timecop.freeze(Time.at(1_433_347_661)) do
-      result = lookup.send(:url, '123', '123')
+      mine = lookup('{ "status": "OK" }')
+
+      mine.lookup('123', '123')
+      result = mine.client.class.last_url
       params = {
         'location' => '123%2C123',
         'timestamp' => '1433347661',
@@ -60,10 +63,12 @@ class TestGoogle < ::Minitest::Test
   end
 
   def test_url_enterprise
-    mine = lookup { |c| c.client_id = '123&asdf' }
+    mine = lookup('{ "status": "OK" }') { |c| c.client_id = '123&asdf' }
 
     Timecop.freeze(Time.at(1_433_347_661)) do
-      result = mine.send(:url, '123', '123')
+      mine.lookup('123', '123')
+      result = mine.client.class.last_url
+
       params = {
         'location' => '123%2C123',
         'timestamp' => '1433347661',

@@ -5,11 +5,16 @@ class HTTPTestClient
     def code; '200'; end
   end
 
+  class << self
+    attr_accessor :last_url
+  end
+
   attr_accessor :body
 
   def initialize(_config); end
 
-  def get(_url)
+  def get(url)
+    self.class.last_url = url
     HTTPTestClient::Response.new(body)
   end
 end
